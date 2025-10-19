@@ -7,15 +7,17 @@ import (
 	"log/slog"
 	"net"
 
-	"github.com/miguelhrocha/otel-collector/config"
-	"github.com/miguelhrocha/otel-collector/metrics"
-	"github.com/miguelhrocha/otel-collector/service"
 	"go.opentelemetry.io/contrib/bridges/otelslog"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	collogspb "go.opentelemetry.io/proto/otlp/collector/logs/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/miguelhrocha/otel-collector/config"
+	"github.com/miguelhrocha/otel-collector/metrics"
+	internalotel "github.com/miguelhrocha/otel-collector/otel"
+	"github.com/miguelhrocha/otel-collector/service"
 )
 
 const name = "miguelhrocha.com/otel-collector"
@@ -44,7 +46,7 @@ func run() (err error) {
 	logger.Info("Starting application")
 
 	// Set up OpenTelemetry.
-	otelShutdown, err := setupOTelSDK(context.Background())
+	otelShutdown, err := internalotel.SetupSDK(context.Background())
 	if err != nil {
 		return
 	}

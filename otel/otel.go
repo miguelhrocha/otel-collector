@@ -1,4 +1,4 @@
-package main
+package otel
 
 import (
 	"context"
@@ -25,9 +25,9 @@ var res = resource.NewWithAttributes(
 	semconv.ServiceVersionKey.String("1.0.0"),
 )
 
-// setupOTelSDK bootstraps the OpenTelemetry pipeline.
+// SetupSDK bootstraps the OpenTelemetry pipeline.
 // If it does not return an error, make sure to call shutdown for proper cleanup.
-func setupOTelSDK(ctx context.Context) (shutdown func(context.Context) error, err error) {
+func SetupSDK(ctx context.Context) (shutdown func(context.Context) error, err error) {
 	var shutdownFuncs []func(context.Context) error
 
 	// shutdown calls cleanup functions registered via shutdownFuncs.
