@@ -59,8 +59,8 @@ func (l *LogsServiceServer) Export(ctx context.Context, request *collogspb.Expor
 					SpanID:    string(logRecord.GetSpanId()),
 				}
 
-				if ok := l.ingestor.TryEnqueue(r); ok {
-					// metrics.LogsEnqueuedCounter.Add(ctx, 1)
+				if ok := l.ingestor.TryEnqueue(ctx, r); ok {
+					metrics.LogsEnqueuedCounter.Add(ctx, 1)
 				}
 			}
 		}

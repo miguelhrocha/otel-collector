@@ -7,8 +7,12 @@ import (
 	"time"
 
 	"github.com/miguelhrocha/otel-collector/config"
+	"github.com/miguelhrocha/otel-collector/metrics"
 )
 
+// WindowManager manages aggregation windows.
+//
+// It periodically flushes the current aggregation window and resets the deduplicator.
 type WindowManager struct {
 	aggregator     *Aggregator
 	deduplicator   *Deduplicator
@@ -19,6 +23,7 @@ type WindowManager struct {
 	doneCh         chan struct{}
 }
 
+// NewWindowManager creates a new WindowManager instance.
 func NewWindowManager(cfg config.Config, a *Aggregator, d *Deduplicator) *WindowManager {
 	return &WindowManager{
 		aggregator:     a,
@@ -31,6 +36,11 @@ func NewWindowManager(cfg config.Config, a *Aggregator, d *Deduplicator) *Window
 	}
 }
 
+// Start begins the window management process.
+//
+// It starts a goroutine that flushes the aggregation window at regular intervals.
+//
+// Stop the window manager by calling the Stop method.
 func (wm *WindowManager) Start(ctx context.Context) {
 	wm.ticker = time.NewTicker(wm.windowDuration)
 
@@ -62,8 +72,12 @@ func (wm *WindowManager) run(ctx context.Context) {
 }
 
 func (wm *WindowManager) flushWindow(ctx context.Context) {
+	start := time.Now()
 
 	snapshot := wm.aggregator.Flush()
+	metrics.WindowFlushDuration.Record(ctx, time.Since(start).Milliseconds())
+	metrics.WindowFlushes.Add(ctx, 1)
+	metrics.CountKeys.Record(ctx, int64(len(snapshot)))
 
 	if len(snapshot) == 0 {
 		fmt.Println("aggregation window is empty")
@@ -85,6 +99,9 @@ func (wm *WindowManager) flushWindow(ctx context.Context) {
 	wm.deduplicator.Reset()
 }
 
+// Stop stops the WindowManager.
+//
+// It performs a final flush of the aggregation window before stopping.
 func (wm *WindowManager) Stop() {
 	close(wm.stopCh)
 	<-wm.doneCh

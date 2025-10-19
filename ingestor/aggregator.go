@@ -8,6 +8,11 @@ import (
 	"github.com/miguelhrocha/otel-collector/config"
 )
 
+// Aggregator handles aggregation of incoming logs.
+//
+// The Aggregator struct is responsible for aggregating log records based on specific keys.
+// It maintains counts of occurrences for each unique key, allowing for efficient aggregation
+// of log data before further processing or exporting.
 type Aggregator struct {
 	shards []aggregatorShard
 }

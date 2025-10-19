@@ -9,6 +9,10 @@ import (
 )
 
 var (
+	// capacityPerShard is an estimate of how many entries each shard can hold
+	// before needing to resize the underlying map.
+	//
+	// This helps to reduce the number of allocations and improve performance.
 	capacityPerShard = 32 * 1024 // 32K entries per shard
 )
 
