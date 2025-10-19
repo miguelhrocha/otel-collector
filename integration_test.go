@@ -9,6 +9,7 @@ import (
 	collogspb "go.opentelemetry.io/proto/otlp/collector/logs/v1"
 	commonpb "go.opentelemetry.io/proto/otlp/common/v1"
 	logspb "go.opentelemetry.io/proto/otlp/logs/v1"
+	resourcepb "go.opentelemetry.io/proto/otlp/resource/v1"
 
 	"github.com/miguelhrocha/otel-collector/config"
 	"github.com/miguelhrocha/otel-collector/ingestor"
@@ -84,6 +85,7 @@ func createRequest(value string) *collogspb.ExportLogsServiceRequest {
 	return &collogspb.ExportLogsServiceRequest{
 		ResourceLogs: []*logspb.ResourceLogs{
 			{
+				Resource: &resourcepb.Resource{},
 				ScopeLogs: []*logspb.ScopeLogs{
 					{
 						LogRecords: []*logspb.LogRecord{

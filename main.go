@@ -28,7 +28,6 @@ import (
 const name = "miguelhrocha.com/otel-collector"
 
 var (
-	tracer = otel.Tracer(name)
 	meter  = otel.Meter(name)
 	logger = otelslog.NewLogger(name)
 )
@@ -64,7 +63,10 @@ func run() (err error) {
 		err = errors.Join(err, otelShutdown(context.Background()))
 	}()
 
-	cfg := config.NewConfig()
+	cfg, err := config.NewConfig(ctx)
+	if err != nil {
+		return err
+	}
 
 	aggregator := ingestor.NewAggregator(cfg)
 	deduplicator := ingestor.NewDeduplicator(cfg)

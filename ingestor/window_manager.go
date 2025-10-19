@@ -2,6 +2,7 @@ package ingestor
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"time"
 
@@ -61,20 +62,25 @@ func (wm *WindowManager) run(ctx context.Context) {
 }
 
 func (wm *WindowManager) flushWindow(ctx context.Context) {
-	startTime := time.Now()
 
 	snapshot := wm.aggregator.Flush()
 
-	slog.InfoContext(ctx, "Flushed aggregation window",
-		slog.Int("unique_keys", len(snapshot)),
-		slog.Duration("flush_duration", time.Since(startTime)))
+	if len(snapshot) == 0 {
+		fmt.Println("aggregation window is empty")
+		return
+	}
+
+	// startTime := time.Now()
+	// slog.InfoContext(ctx, "Flushed aggregation window",
+	// 	slog.Int("unique_keys", len(snapshot)),
+	// 	slog.Duration("flush_duration", time.Since(startTime)))
 
 	// print snapshot
+	fmt.Println("aggregation window")
 	for k, v := range snapshot {
-		slog.InfoContext(ctx, "Aggregated data",
-			slog.String("key", k),
-			slog.Int64("count", v))
+		fmt.Printf("%s - %d\n", k, v)
 	}
+	fmt.Println("-----")
 
 	wm.deduplicator.Reset()
 }

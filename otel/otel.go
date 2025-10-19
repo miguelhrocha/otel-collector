@@ -20,8 +20,8 @@ import (
 
 var res = resource.NewWithAttributes(
 	semconv.SchemaURL,
-	semconv.ServiceNameKey.String("otlp-log-processor-backend"),
-	semconv.ServiceNamespaceKey.String("dash0-exercise"),
+	semconv.ServiceNameKey.String("otlp-log-processor"),
+	semconv.ServiceNamespaceKey.String("miguelhrocha"),
 	semconv.ServiceVersionKey.String("1.0.0"),
 )
 
