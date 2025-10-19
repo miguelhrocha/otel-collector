@@ -56,13 +56,13 @@ func (extractor *AttributeExtractor) Extract(
 func (extractor *AttributeExtractor) findInAttributes(attributes []*commonpb.KeyValue) string {
 	for _, attr := range attributes {
 		if attr.GetKey() == extractor.attributeKey {
-			return extractor.getValueAsString(attr.GetValue())
+			return AnyValueAsString(attr.GetValue())
 		}
 	}
 	return ""
 }
 
-func (extractor *AttributeExtractor) getValueAsString(value *commonpb.AnyValue) string {
+func AnyValueAsString(value *commonpb.AnyValue) string {
 	if value == nil {
 		return unknownValue
 	}

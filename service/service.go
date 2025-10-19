@@ -4,11 +4,13 @@ import (
 	"context"
 	"log/slog"
 
+	collogspb "go.opentelemetry.io/proto/otlp/collector/logs/v1"
+	common "go.opentelemetry.io/proto/otlp/common/v1"
+
 	"github.com/miguelhrocha/otel-collector/config"
 	"github.com/miguelhrocha/otel-collector/ingestor"
 	"github.com/miguelhrocha/otel-collector/metrics"
 	"github.com/miguelhrocha/otel-collector/otel"
-	collogspb "go.opentelemetry.io/proto/otlp/collector/logs/v1"
 )
 
 type LogsServiceServer struct {
@@ -52,7 +54,7 @@ func (l *LogsServiceServer) Export(ctx context.Context, request *collogspb.Expor
 					TimeUnix:  logRecord.GetTimeUnixNano(),
 					ObsUnix:   logRecord.GetObservedTimeUnixNano(),
 					Severity:  int32(logRecord.GetSeverityNumber()),
-					Body:      logRecord.GetBody().GetStringValue(),
+					Body:      bodyToString(logRecord.GetBody()),
 					TraceID:   string(logRecord.GetTraceId()),
 					SpanID:    string(logRecord.GetSpanId()),
 				}
@@ -65,4 +67,11 @@ func (l *LogsServiceServer) Export(ctx context.Context, request *collogspb.Expor
 	}
 
 	return &collogspb.ExportLogsServiceResponse{}, nil
+}
+
+func bodyToString(v *common.AnyValue) string {
+	if v == nil {
+		return ""
+	}
+	return otel.AnyValueAsString(v)
 }

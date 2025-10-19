@@ -34,7 +34,12 @@ func NewIngestor(cfg config.Config, a *Aggregator, d *Deduplicator) *Ingestor {
 		deduplicator: d,
 	}
 
-	for i := 0; i < cfg.Workers; i++ {
+	workers := cfg.Workers
+	if workers <= 0 {
+		workers = 4
+	}
+
+	for i := 0; i < workers; i++ {
 		in.wg.Add(1)
 		go func() {
 			defer in.wg.Done()
