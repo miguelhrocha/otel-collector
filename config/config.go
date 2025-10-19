@@ -55,6 +55,11 @@ type Config struct {
 	//
 	// Default is 1000.
 	QueueSize int `env:"QUEUE_SIZE, default=1000"`
+
+	// OtelEnabled indicates whether OpenTelemetry instrumentation is enabled.
+	//
+	// Default is true.
+	OtelEnabled bool `env:"OTEL_ENABLED, default=true"`
 }
 
 // NewConfig creates a new Config instance

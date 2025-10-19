@@ -46,26 +46,29 @@ func main() {
 }
 
 func run() (err error) {
-	slog.SetDefault(logger)
-	logger.Info("Starting application")
+	slog.Info("Starting application")
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, os.Kill)
 	defer cancel()
 
-	// Set up OpenTelemetry.
-	otelShutdown, err := internalotel.SetupSDK(ctx)
-	if err != nil {
-		return
-	}
-
-	// Handle shutdown properly so nothing leaks.
-	defer func() {
-		err = errors.Join(err, otelShutdown(context.Background()))
-	}()
-
 	cfg, err := config.NewConfig(ctx)
 	if err != nil {
 		return err
+	}
+
+	if cfg.OtelEnabled {
+		slog.SetDefault(logger)
+		// Set up OpenTelemetry.
+
+		otelShutdown, err := internalotel.SetupSDK(ctx)
+		if err != nil {
+			return err
+		}
+
+		// Handle shutdown properly so nothing leaks.
+		defer func() {
+			err = errors.Join(err, otelShutdown(context.Background()))
+		}()
 	}
 
 	aggregator := ingestor.NewAggregator(cfg)

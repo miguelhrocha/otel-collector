@@ -22,7 +22,7 @@ run:
 
 run-example:
 	@echo "Starting with example configuration..."
-	OTEL_TRACES_EXPORTER=none OTEL_METRICS_EXPORTER=none OTEL_LOGS_EXPORTER=none ATTRIBUTE_KEY=foo WINDOW_DURATION=30s go run ./...
+	OTEL_ENABLED=false ATTRIBUTE_KEY=foo WINDOW_DURATION=30s go run ./...
 
 clean:
 	@echo "Cleaning up..."
