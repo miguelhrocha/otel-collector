@@ -3,6 +3,7 @@ module github.com/miguelhrocha/otel-collector
 go 1.23.4
 
 require (
+	github.com/segmentio/fasthash v1.0.3
 	github.com/stretchr/testify v1.11.1
 	go.opentelemetry.io/contrib/bridges/otelslog v0.7.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.57.0

@@ -76,9 +76,11 @@ func (extractor *AttributeExtractor) getValueAsString(value *commonpb.AnyValue) 
 	case *commonpb.AnyValue_IntValue:
 		return fmt.Sprintf("%d", v.IntValue)
 	case *commonpb.AnyValue_DoubleValue:
-		return fmt.Sprintf("%f", v.DoubleValue)
+		return fmt.Sprintf("%g", v.DoubleValue)
 	case *commonpb.AnyValue_BoolValue:
 		return fmt.Sprintf("%t", v.BoolValue)
+	case *commonpb.AnyValue_BytesValue:
+		return string(v.BytesValue)
 	default:
 		// For complex types (arrays, maps), return unknown
 		return unknownValue

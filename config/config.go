@@ -12,6 +12,16 @@ type Config struct {
 
 	MaxReceiveMessageSize int
 
+	// Shards is the number of shards to use for the log aggregator.
+	//
+	// The value should be a power of two for optimal performance.
+	Shards int
+
+	// Workers is the number of worker goroutines to process logs.
+	//
+	// Each worker will read from the log processing queue and process logs concurrently.
+	//
+	// The value should be a fraction of the number of shards to avoid contention.
 	Workers   int
 	QueueSize int
 }
@@ -25,6 +35,7 @@ func NewConfig() Config {
 	flag.DurationVar(&cfg.AggregationWindow, "aggregationWindow", 10*time.Second, "The time window for aggregation.")
 	flag.IntVar(&cfg.Workers, "workers", 4, "The number of worker goroutines to process logs.")
 	flag.IntVar(&cfg.QueueSize, "queueSize", 1000, "The size of the log processing queue.")
+	flag.IntVar(&cfg.Shards, "shards", 32, "The number of shards for the aggregator.")
 
 	flag.Parse()
 

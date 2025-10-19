@@ -1,4 +1,4 @@
-package aggregator
+package ingestor
 
 import (
 	"sync"
@@ -9,10 +9,10 @@ import (
 )
 
 type Aggregator struct {
-	shards []shard
+	shards []aggregatorShard
 }
 
-type shard struct {
+type aggregatorShard struct {
 	// Chose a regular mutext because the aggregator expects a write-heavy workload
 	// and sync.RWMutex would add unnecessary overhead.
 	mu sync.Mutex
@@ -25,10 +25,10 @@ type shard struct {
 // NewAggregator creates a new Aggregator instance with the amount
 // of shards specified in the config's Shards field.
 func NewAggregator(cfg config.Config) *Aggregator {
-	s := make([]shard, cfg.Shards)
+	s := make([]aggregatorShard, cfg.Shards)
 
 	for i := range s {
-		s[i] = shard{
+		s[i] = aggregatorShard{
 			data: make(map[string]int64),
 		}
 	}
