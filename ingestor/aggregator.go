@@ -3,7 +3,7 @@ package ingestor
 import (
 	"sync"
 
-	"github.com/segmentio/fasthash/fnv1"
+	"github.com/segmentio/fasthash/fnv1a"
 
 	"github.com/miguelhrocha/otel-collector/config"
 )
@@ -53,7 +53,7 @@ func (a *Aggregator) Inc(key string) {
 	//
 	// This design gives us a lock granularity of 1/shards,
 	// which improves concurrency and throughput in write-heavy workloads.
-	hash := fnv1.HashBytes64([]byte(key))
+	hash := fnv1a.HashBytes64([]byte(key))
 	shardKey := hash % uint64(len(a.shards))
 
 	shard := &a.shards[shardKey]
