@@ -19,6 +19,9 @@ var (
 	CountKeys           metric.Int64Gauge
 )
 
+// InitMetrics initializes all metrics used in the application.
+//
+// It should be called once at application startup.
 func InitMetrics(meter metric.Meter) error {
 	var err error
 

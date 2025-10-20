@@ -30,6 +30,9 @@ func NewLogService(cfg config.Config, ingestor *ingestor.Ingestor) collogspb.Log
 	return s
 }
 
+// Export handles incoming ExportLogsServiceRequest requests.
+//
+// It extracts the specified attribute from each log record and enqueues it for processing.
 func (l *LogsServiceServer) Export(ctx context.Context, request *collogspb.ExportLogsServiceRequest) (*collogspb.ExportLogsServiceResponse, error) {
 	slog.DebugContext(ctx, "Received ExportLogsServiceRequest")
 	metrics.LogsReceivedCounter.Add(ctx, 1)

@@ -21,10 +21,10 @@ var (
 // Logs in OTEL format can sometimes be duplicated due to various reasons such as network issues or retries.
 // The Deduplicator struct is responsible for identifying and removing these duplicate logs before further processing.
 type Deduplicator struct {
-	shards []shard
+	shards []deduplicatorShard
 }
 
-type shard struct {
+type deduplicatorShard struct {
 	mu       sync.Mutex
 	seen     map[uint64]struct{}
 	capacity int
@@ -32,9 +32,9 @@ type shard struct {
 
 // NewDeduplicator creates a new Dedupe instance with the specified number of shards and capacity per shard.
 func NewDeduplicator(cfg config.Config) *Deduplicator {
-	s := make([]shard, cfg.Shards)
+	s := make([]deduplicatorShard, cfg.Shards)
 	for i := range s {
-		s[i] = shard{
+		s[i] = deduplicatorShard{
 			seen:     make(map[uint64]struct{}, capacityPerShard),
 			capacity: capacityPerShard,
 		}
