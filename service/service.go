@@ -64,6 +64,11 @@ func (l *LogsServiceServer) Export(ctx context.Context, request *collogspb.Expor
 
 				if ok := l.ingestor.TryEnqueue(ctx, r); ok {
 					metrics.LogsEnqueuedCounter.Add(ctx, 1)
+				} else {
+					slog.WarnContext(ctx, "Ingestor queue is full, dropping log record",
+						slog.String("attribute_value", attributeValue),
+						slog.Uint64("time_unix", r.TimeUnix),
+					)
 				}
 			}
 		}
